@@ -1,59 +1,71 @@
-# BowlingExample
+# Bowling Example
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.2.
+Das ist ein Repo für das Bowling-Game_2.pdf von Philipp Dörner.
 
-## Development server
+## Erklärung meiner Entscheidungen
 
-To start a local development server, run:
+### Kurzfristig
 
-```bash
-ng serve
-```
+### Barrierefreiheit
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Die Art der Darstellung von score-cell ist noch nicht ganz barrierefrei.
 
-## Code scaffolding
+Hier sollte noch in score-cell.html visuell versteckter Text (via CSS Klasse .cdk-visually-hidden) hinzugefügt werden.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+So kann dann eine Zelle auch im Fließtext durch einen Screenreader besser verstanden werden.
 
-```bash
-ng generate component component-name
-```
+Ebenso sollten einzelne score-cells zu aria-live Regionen gemacht werden, damit nach einem "Werfen" dem User direkt die Änderungen zur Score vorgelesen werden.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Zellen für Scores einzelner Würfe in eigene Komponente auslagern
 
-```bash
-ng generate --help
-```
+Das war der einzige noch verbliebene sich wiederholende Teil wo man schauen könnte ob das sinnvoll wäre.
 
-## Building
+#### Kein SSR/SSG
 
-To build the project run:
+Dieses Repo wurde zunächst ohne SSR/SSG angegangen, da dies zusätzliche Zeit zum konfigurieren gekostet hätte. Soweit mein Verständnis der Aufgabe geht, liegt der Fokus mehr auf generelle Code-Strukturierung.
 
-```bash
-ng build
-```
+Da dies zeitlich schnell machbar wäre, wäre je nach Anforderung und Zukunftsausblick SSR/SSG nachziehen eine der ersten Dinge.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+#### Unit Testing
 
-## Running unit tests
+Dafür war keine Zeit mehr da. Hier kommt es in meinen Augen primär auf die Unternehmensinterne Testing-Strategie an, an die sich gehalten werden sollte und was die bisherigen Strukturen sind.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Gibt es eine dedizierte QA Abteilung?
 
-```bash
-ng test
-```
+Falls ja - Primär unit-test mit Vitest schreiben, Komponenten/Services jeweils entweder mocken, oder via Material TestBed-Harness vertesten. Bei Komponenten primär die Änderungen im HTML bzw. den Harnesses überprüfen, bei Services das der nach außen sichtbare State dem entspricht was man erwarten würde.
+Der primäre Wert dieser Tests liegt langfristig gegenüber Code-Migrationen die lediglich Syntax ändern, aber keine Inhalte.
 
-## Running end-to-end tests
+Falls nein - Wie groß ist der generelle Zeitdruck auf dem Projekt / Was ist die Testkultur dazu?
+Falls ausreichend Zeit vorhanden ist: Integrationstests und zusätzlich dazu unit-tests wie vorher erwähnt.
+Falls nicht ausreichend Zeit vorhanden ist: Ausschließlich Integrationstests. Diese sind der wichtigere Teil.
 
-For end-to-end (e2e) testing, run:
+#### Weiteres Tooling
 
-```bash
-ng e2e
-```
+Je nachdem was im Unternehmen verwendet wird bzw. erlaubt ist:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Eslint + Prettier
+- [Sheriff Eslint-Plugin](https://sheriff.softarc.io/docs/installation) zum kontrollieren und limitieren welcher Ordner von welchen anderen Ordnern importieren darf
+- (Falls AI Nutzung im Unternehmen erlaubt und verbreitet ist): Angular-MCP aufsetzen und gemeinsame (auch IDE spezifische) configs für AI-Toolings ins Repo verschieben
 
-## Additional Resources
+### Mittelfristig/Langfristig
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+#### State Management
+
+Aufgrund der limitierten Zeit der Aufgabe habe ich jetzt nicht sofort einen Service rausgeholt bzw. Ngrx eingebunden, da dies zusätzlich Zeit gekostet hätte und für den _noch_ simplen Scope der Aufgabe zu viel gewesen wäre.
+
+Je nachdem wie weitere Featurewünsche ausschauen würden wäre umbau des State Mangements auf NgRX mit Redux pattern sinnvoll, hierzu bräuchte es ein Stakeholder meeting um eine Idee zu kriegen wo die Reise hingeht.
+
+#### Designsystem
+
+Abhängig der Rahmenbedingungen kann man hier entweder:
+
+- ein bestehendes einzuführen
+- ein neues bauen (mit Storybook o.ä.) auf Basis existierender Designtokens
+- ein neues bauen (mit Storybook o.ä.) ohne Designtokens einzuführen wenn Designtokens keinen Mehrwert liefern
+
+#### i18n
+
+Wäre die Art von Ding die man aufsetzt sofern von Produkt klar vorgegeben ist das man die Applikation Mehrsprachig anbieten will und den damit verbundenen Aufwand eingehen möchte.
+
+Hier auch im idealfall an bestehende Übersetzungs-Mechanismen anknüpfen.
+Per default würde ich zu Transloco neigen, falls man Übersetzungen zu Compile-Zeit haben möchte wäre die alternative angular-i18n.
