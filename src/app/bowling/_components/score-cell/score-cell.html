@@ -1,0 +1,56 @@
+<div class="roll-score-row">
+  @if (!isLastFrame()) {
+    @let isStrike = frameDataset().firstRoll?.kind === 'STRIKE';
+    <div class="roll-score-row__first-roll" [class.roll-score-row__first-roll--strike]="isStrike">
+      @if (!isStrike) {
+        {{ frameDataset().firstRoll?.score }}
+      }
+    </div>
+
+    <div class="roll-score-row__cells cells">
+      <div class="cells__cell cell">
+        @if (frameDataset().firstRoll?.kind === 'STRIKE') {
+          <div class="cell__full"></div>
+        }
+        @if (frameDataset().secondRoll?.kind === 'SPARE') {
+          <div class="cell__half-full"></div>
+        } @else {
+          {{ frameDataset().secondRoll?.score }}
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="roll-score-row__first-roll">
+      {{ frameDataset().firstRoll?.score }}
+    </div>
+
+    <div class="roll-score-row__cells cells">
+      <div class="cells__cell cell">
+        @if (frameDataset().secondRoll?.kind === 'STRIKE') {
+          <div class="cell__full"></div>
+        } @else if (frameDataset().secondRoll?.kind === 'SPARE') {
+          <div class="cell__half-full"></div>
+        } @else {
+          {{ frameDataset().secondRoll?.score }}
+        }
+      </div>
+
+      @if (frameDataset().thirdRoll) {
+        <div class="cells__cell cell">
+          @if (frameDataset().thirdRoll?.kind === 'STRIKE') {
+            <div class="cell__full"></div>
+          } @else if (frameDataset().thirdRoll?.kind === 'SPARE') {
+            <div class="cell__half-full"></div>
+          } @else {
+            {{ frameDataset().thirdRoll?.score }}
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+@let hasScore = frameDataset().totalScore != null;
+<div class="total-score-row" [class.total-score-row--opaque]="!hasScore">
+  {{ frameDataset().totalScore ?? 0 }}
+</div>

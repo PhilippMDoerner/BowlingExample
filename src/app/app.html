@@ -1,0 +1,37 @@
+<div>
+  <h1 class="heading">Bowling Example</h1>
+  <section class="scores">
+    <div class="scores__entry">Opponent: <app-score-row [frames]="demoFrames" /></div>
+    <div class="scores__entry">
+      You:
+      <app-score-row [frames]="frames()" />
+    </div>
+  </section>
+</div>
+
+<section>
+  @if (frameState() !== 'DONE') {
+    <div class="roll">
+      <form class="roll__cheating" (submit)="performCheatRoll($event, input.value)">
+        <div class="roll__sub-heading">Roll with static value</div>
+
+        <mat-form-field [appearance]="'outline'">
+          <mat-label> Roll Score </mat-label>
+          <input matInput type="number" [max]="MAX_PINS" min="0" #input />
+        </mat-form-field>
+
+        <button [matButton]="'outlined'" type="submit">Cheat Roll!</button>
+      </form>
+
+      <div class="roll__gamble">
+        <div class="roll__sub-heading">Gamble Roll</div>
+        <button [matButton]="'filled'" class="roll__random" (click)="performRandomRoll()">
+          <mat-icon>casino</mat-icon>
+          Try my luck!
+        </button>
+      </div>
+    </div>
+  } @else {
+    <button [matButton]="'filled'" class="game__reset" (click)="resetGame()">Play Again!</button>
+  }
+</section>
